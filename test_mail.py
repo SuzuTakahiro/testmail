@@ -5,14 +5,15 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 CONF_FILE='config/settings.ini'
+SETTINGS="SETTINGS"
 SMTP_SERVER_HOST="SMTP_SERVER_HOST"
 SMTP_SERVER_PORT="SMTP_SERVER_PORT"
 DEFAULT_FROM_ADDRESS="DEFAULT_FROM_ADDRESS"
 DEFAULT_TO_ADDRESS="DEFAULT_TO_ADDRESS"
 
-subject = "Test Email"
-text_body = "改行テスト\nテストメール\rテストメール\r\n"
-html_body = """
+SUBJECT = "Test Email"
+TEXT_BODY = "改行テスト\nテストメール\rテストメール\r\n"
+HTML_BODY = """
 <html>
     <head></head>
     <body>
@@ -22,8 +23,8 @@ html_body = """
 
 
 def createMsg(config,subject,text_message,html_message,from_address=None,to_address=None):
-    default_to_address =config['SETTINGS'][DEFAULT_FROM_ADDRESS]
-    default_from_address = config['SETTINGS'][DEFAULT_TO_ADDRESS]
+    default_to_address =config[SETTINGS][DEFAULT_FROM_ADDRESS]
+    default_from_address = config[SETTINGS][DEFAULT_TO_ADDRESS]
     msg = MIMEMultipart()
     msg["Subject"] = subject
     if from_address is None :
@@ -40,15 +41,15 @@ def createMsg(config,subject,text_message,html_message,from_address=None,to_addr
      
 
 def createSMTPSetting(config):
-    smtp_host =  config['SETTINGS'][SMTP_SERVER_HOST]
-    smtp_port = config['SETTINGS'][SMTP_SERVER_PORT]
+    smtp_host =  config[SETTINGS][SMTP_SERVER_HOST]
+    smtp_port = config[SETTINGS][SMTP_SERVER_PORT]
     return smtplib.SMTP(smtp_host, smtp_port)
 
 def sendMail(from_address=None,to_address=None):
     config = configparser.ConfigParser()
     config.read(CONF_FILE)
     smtp = createSMTPSetting(config)
-    msg = createMsg(config,subject,text_body,html_body,from_address=from_address,to_address=to_address)
+    msg = createMsg(config,SUBJECT,TEXT_BODY,HTML_BODY,from_address=from_address,to_address=to_address)
     smtp.send_message(msg)
     smtp.close()
 
